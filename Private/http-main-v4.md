@@ -887,6 +887,18 @@ Withdraw status codes:
 * `Canceled` - 4
 * `Successful` - 3 and 7
 
+Available system types:
+* referral_reward
+* smartbox_invest
+* smartbox_reward
+* smartbox_withdraw
+* tournament_reward
+* aml_request
+* daily_payments
+* code_reward
+* denomination
+* partial_normalize
+
 ```json5
 {
     "limit": 100,
@@ -904,6 +916,7 @@ Withdraw status codes:
             "memo": "",                                                                                   // deposit memo
             "fee": "0",                                                                                   // deposit fee
             "status": 15,                                                                                 // transactions status
+            "systemType": "",                                                                             // transaction special purpose type. Empty if transaction have no special functions
             "network": null,                                                                              // if currency is multinetwork
             "transactionHash": "a275a514013e4e0f927fd0d1bed215e7f6f2c4c6ce762836fe135ec22529d886",        // deposit transaction hash
             "confirmations": {                                                                            // if transaction status == 15 you can see this object
