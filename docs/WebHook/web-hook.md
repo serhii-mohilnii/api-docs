@@ -1,5 +1,11 @@
 # WebHook HTTP API
 
+* [How to use](#how-to-use)
+* [Requirements](#requirements)
+* [Webhook methods](#webhook-methods)
+* [WhiteBIT withdraw from main balance](#whitebit-withdraw-from-main-balance)
+
+
 ## How to use
 
 1. Go to your account on whitebit.com.
@@ -8,7 +14,7 @@
 4. Paste correct URI to your web server which will process web-hook calls.
 5. Press Generate a new key button and toggle the activation switcher to "Activated".
 
-Please pay attention that secret key will be show only one time, so make sure you save it in any secure key store
+ ⚠ Please pay attention that secret key will be shown only once, so make sure you save it in any secure key store
 
 ## Requirements:
 
@@ -19,15 +25,15 @@ Before starting using webhooks, you'll be asked to verify ownership of the domai
 2. You can add plain text file `whiteBIT-verification.txt` into your root domain folder and provide public web access to this file from your server. In this file should be placed your public webhook key.
 3. You can implement `/whiteBIT-verification` endpoint. This endpoint should respond with 200 OK and return JSON array which contains your public webhook key. For example: ```["<your-public-webhook-key>"]```
 
-Passing just one of these checks will be able you to switch webhook on 
+Passing just one of these checks will be able you to switch webhook on
 
 ### For processing web-hook requests
 
-All web hook requests are performing using POST method and with application/json content type. Consumer server should respond with 200 HTTP status code. If consumer was unable to handle web-hook, the request will be retry every 10 minutes but not more than 5 times.  
+All web hook requests are performing using POST method and with application/json content type. Consumer server should respond with 200 HTTP status code. If consumer was unable to handle web-hook, the request will be retry every 10 minutes but not more than 5 times.
 
 #### Body data
 
-All web-hook requests are performing with 
+All web-hook requests are performing with
 
 ```json5
 {
@@ -42,11 +48,11 @@ All web-hook requests are performing with
 
 **method** - string. The name of method which was evaluated. Web hooks API supports such web-hook methods:
 
-- **code.apply**. Performs when code owned by a customer was applied. 
+- **code.apply**. Performs when code owned by a customer was applied.
 
 **id** - string. Uuid to identify every request.
 
-**params** - the request payload. Here you can find useful data about passed actions, which triggered web hook call. Also in this field placed a nonce. **'nonce'** - a number that is always **greater** than the previous request’s nonce number 
+**params** - the request payload. Here you can find useful data about passed actions, which triggered web hook call. Also in this field placed a nonce. **'nonce'** - a number that is always **greater** than the previous request’s nonce number
 
 
 #### Request headers
@@ -74,7 +80,7 @@ Performed when code was applied. Request example:
        "nonce": 1
    },
    "id": "45a1d85d-2fdf-483e-8dfa-6d253148c730"
-} 
+}
 ```
 
 ### WhiteBIT deposit to main balance
@@ -104,7 +110,34 @@ Performed when deposit was accepted. Request example:
     }
   },
   id: 'uuid'
-}   
+}
+```
+
+Performed when deposit was update. Request example:
+
+```json5
+{
+  method: "deposit.update",
+  params: {
+    "address": "wallet address",                  // deposit address
+    "amount": "0.000600000000000000",             // amount of deposit
+    "createdAt": 1593437922,                      // timestamp of deposit
+    "currency": "Bitcoin",                        // deposit currency
+    "description": "update",                      // deposit description
+    "fee": "0.000000000000000000",                // deposit fee
+    "memo": "",                                   // deposit memo
+    "network": "TRC20",                           // if currency is multi network
+    "status": 15,                                 // transactions status
+    "ticker": "BTC",                              // deposit currency ticker
+    "transactionHash": "transaction hash",        // deposit transaction hash
+    "uniqueId": null,                             // unique Id of deposit
+    "confirmations": {                            // if transaction has confirmations info it will display here
+        "actual": 1,                              // current block confirmations
+        "required": 2                             // required block confirmation for successful deposit
+    }
+  },
+  id: 'uuid'
+}
 ```
 
 Performed when deposit was processed, so it is available on your balance. Request example:
@@ -132,7 +165,7 @@ Performed when deposit was processed, so it is available on your balance. Reques
     }
   },
   id: 'uuid'
-}   
+}
 ```
 
 Performed when deposit was canceled. Request example:
@@ -162,6 +195,9 @@ Performed when deposit was canceled. Request example:
   id: 'uuid'
 }
 ```
+Deposit status codes:
+
+* Pending - 15
 
 ### WhiteBIT withdraw from main balance
 

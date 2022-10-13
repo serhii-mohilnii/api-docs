@@ -9,7 +9,7 @@
 * [Symbols](#symbols)
 * [Order depth](#order-depth)
 * [Trade history](#trade-history)
-    
+
 Base URL is https://whitebit.com
 
 Endpoint example: https://whitebit.com/api/v1/public/{endpoint}

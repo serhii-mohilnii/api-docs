@@ -8,7 +8,7 @@
 * [Fee](#fee)
 * [Asset Status List](#asset-status-list)
 * [Orderbook](#orderbook)
-    
+
 Base endpoint is https://whitebit.com
 
 Example how to use: https://whitebit.com/api/v2/public/{endpoint}

@@ -9,6 +9,7 @@
 * [Fee](#fee)
 * [Server Time](#server-time)
 * [Server Status](#server-status)
+* [Collateral Markets](#collateral-markets-list)
     
 Base URL is https://whitebit.com
 
@@ -52,7 +53,7 @@ ___
 
 ___
 
-### Market activity 
+### Market activity
 
 ```
 [GET] /api/v4/public/ticker
@@ -109,6 +110,32 @@ NONE
     "taker_fee": "0.1",                       // Taker fee in percentage
     "min_deposit": "0.0001",                  // Min deposit amount
     "max_deposit": "0",                       // Max deposit amount, will not be returned if there is no limit, 0 if unlimited
+    "currency_precision": 18,                 // Max number of digits to the right of the decimal point
+    "is_memo": false,                         // Identifies if currency has memo address
+    "networks": {                             // Currency networks. It might be a list of networks for cryptocurrency networks or just a single item list for simple cryptocurrencies or tokens
+      "deposits": [                           // Networks available for depositing
+        "BTC"
+      ],
+      "withdraws": [                          // Networks available for withdrawing
+        "BTC"
+      ],
+      "default": "BTC"                        // Default network for depositing / withdrawing if available
+    },
+    "limits": {                               // Currency limits by each network
+      "deposit": {                            // Deposits limits
+        "BTC": {                              // Network
+          "min": "0.001"                      // Max deposit amount
+        },
+      },
+      "withdraw": {                           // Withdraws limits
+        "BTC": {                              // Network
+          "min": "0.002",                     // Min withdraw amount
+        },
+      }
+    },
+    "confirmations": {                        // Deposit confirmations count mapped by network
+      "BTC": 2
+    }
   },
   "ETH": {
     "name": "Ethereum",
@@ -120,7 +147,33 @@ NONE
     "maker_fee": "0.1",
     "taker_fee": "0.1",
     "min_deposit": "0.1",
-    "max_deposit": "0"
+    "max_deposit": "0",
+    "currency_precision": 18,                
+    "is_memo": false,
+    "networks": {                             // Currency networks. It might be a list of networks for cryptocurrency networks or just a single item list for simple cryptocurrencies or tokens
+      "deposits": [                           // Networks available for depositing
+        "ETH"
+      ],
+      "withdraws": [                          // Networks available for withdrawing
+        "ETH"
+      ],
+      "default": "ETH"                        // Default network for depositing / withdrawing if available
+    },
+    "limits": {                               // Currency limits by each network
+      "deposit": {                            // Deposits limits
+        "ETH": {                              // Network
+          "min": "0.001"                      // Max deposit amount
+        },
+      },
+      "withdraw": {                           // Withdraws limits
+        "ETH": {                              // Network
+          "min": "0.002",                     // Min withdraw amount
+        },
+      }
+    },
+    "confirmations": {
+      "ETH": 20
+    }
   },
   "USDT": {
     "name": "Tether US",
@@ -133,7 +186,9 @@ NONE
     "taker_fee": "0.1",
     "min_deposit": "0",
     "max_deposit": "0",
-    "networks": {                             // This object will be available in response if the currency is available on several networks
+    "currency_precision": 6,
+    "is_memo": false,
+    "networks": {                             // Currency networks. It might be a list of networks for cryptocurrency networks or just a single item list for simple cryptocurrencies or tokens
       "deposits": [                           // Networks available for depositing
         "ERC20",
         "TRC20",
@@ -150,7 +205,7 @@ NONE
     },
     "limits": {                               // This object will be returned when currency has several networks/providers
       "deposit": {                            // Deposits limits
-        "ERC20": {                            // Network/provider
+        "ERC20": {                            // Network
           "min": "5",                         // Min deposit amount
           "max": "1000"                       // Max deposit amount
         },
@@ -160,7 +215,7 @@ NONE
         ...
       },
       "withdraw": {                           // Withdraws limits
-        "ERC20": {                            // Network/provider
+        "ERC20": {                            // Network
           "min": "10",                        // Min withdraw amount
           "max": "1000"                       // Max withdraw amount
         },
@@ -168,7 +223,51 @@ NONE
           "min": "10"                         // If there is no max limit, it is not returned
         },
         ...
-      } 
+      }
+    },
+    "confirmations": {
+      "ERC20": 20,
+      "TRC20": 20
+    }
+  },
+  "UAH": {
+    "name": "Hryvnia",
+    "unified_cryptoasset_id": 0,
+    "can_withdraw": true,
+    "can_deposit": true,
+    "min_withdraw": "50",
+    "max_withdraw": "100000",
+    "maker_fee": "0.1",
+    "taker_fee": "0.1",
+    "min_deposit": "50",
+    "max_deposit": "100000",
+    "is_memo": false,
+    "providers": {                            // Fiat currency providers
+      "deposits": [                           // Providers available for depositing
+        "VISAMASTER",
+        "ADVCASH",
+        "GEOPAY"
+      ],
+      "withdraws": [                          // Providers available for withdrawing
+        "VISAMASTER",
+        "GEOPAY"
+      ],
+    },
+    "limits": {                               // This object will be returned when currency has several networks/providers
+      "deposit": {                            // Deposits limits
+        "VISAMASTER": {                       // Provider
+          "min": "50",                        // Min deposit amount
+          "max": "50000"                      // Max deposit amount
+        },
+      ...
+      },
+      "withdraw": {                          // Withdraws limits
+        "VISAMASTER": {                      // Provider
+          "min": "50",                       // Min withdraw amount
+          "max": "50000"                     // Max withdraw amount
+        },
+        ...
+      }
     }
   },
   {...}
@@ -179,7 +278,7 @@ ___
 ### Orderbook
 
 ```
-[GET] /api/v4/public/orderbook/{market}?depth=100&level=2
+[GET] /api/v4/public/orderbook/{market}?limit=100&level=2
 ```
 This endpoint retrieves the current order book as two arrays (bids / asks) with additional parameters.
 
@@ -190,7 +289,7 @@ _1 second_
 
 Name | Type | Mandatory | Description
 ------------ | ------------ | ------------ | ------------
-depth | int | **No** | Orders depth quantity:[0,5,10,20,50,100,500]. Not defined or 0 will return full order book
+limit | int | **No** | Orders depth quantity:[0,5,10,20,50,100,500]. Not defined or 0 will return full order book
 level | int | **No** | Optional parameter that allows API user to see different level of aggregation. Level 0 – default level, no aggregation. Starting from level 1 (lowest possible aggregation) and up to level 5 - different levels of aggregated orderbook.
 
 
@@ -271,7 +370,7 @@ ___
   "USDT (ERC20)": {
     "ticker": "USDT",                         // currency ticker
     "name": "Tether US",                      // currency ticker
-    "providers": [], 
+    "providers": [],
     "deposit": {                              // deposit fees
       "min_amount": "0.0005",                 // min deposit amount. 0 if there is no limitation
       "max_amount": "0.1",                    // max deposit amount. 0 if there is no limitation
@@ -279,7 +378,7 @@ ___
       "flex": {
         "min_fee": "100",                     // min fee amount
         "max_fee": "1000",                    // max fee amount
-        "percent": "10" 
+        "percent": "10"
       },                                      // flex fee only applies for all transactions but according to min/max fee. Nullable if there is no flex fee
     },
     "withdraw": {
@@ -340,7 +439,7 @@ _1 second_
 **Response:**
 ```json5
 {
-  "time": 1631451591 
+  "time": 1631451591
 }
 ```
 ### Server Status
@@ -360,3 +459,66 @@ _1 second_
 ]
 ```
 
+### Collateral Markets List
+
+```
+[GET] /api/v4/public/collateral/markets
+```
+This endpoint returns the list of markets that available for collateral trading
+
+**Response:**
+```json5
+[
+    "ADA_USDT",
+    "BCH_USDT",
+    "BTC_USDT",
+    "DOGE_USDT",
+    "EOS_USDT",
+    "ETH_BTC",
+    "ETH_USDT",
+    "LINK_USDT",
+    "LTC_USDT",
+    "SHIB_USDT",
+    "SOL_USDT",
+    "TRX_USDT",
+    "USDC_USDT",
+    "XLM_USDT",
+    "XRP_USDT"
+]
+```
+
+### Available Futures Markets List
+
+```
+[GET] /api/v4/public/futures
+```
+This endpoint returns the list of available futures markets.
+
+**Response:**
+```json5
+{
+  "success": true,
+  "message": null,
+  "result": [
+    {
+      "ticker_id": "BTC_PERP",                        //Identifier of a ticker with delimiter to separate base/target
+      "stock_currency": "BTC",                        //Symbol/currency code of base pair
+      "money_currency": "USDT",                       //Symbol/currency code of target pair
+      "last_price": "24005.5",                        //Last transacted price of base currency based on given target currency
+      "stock_volume": "196965.591",                   //24 hour trading volume in base pair volume
+      "money_volume": "4737879075.7817",              //24 hour trading volume in target pair volume
+      "bid": "24005.4",                               //Current highest bid price
+      "ask": "24005.6",                               //Current lowest ask price
+      "high": "24295.1",                              //Rolling 24-hours highest transaction price
+      "low": "23765.3",                               //Rolling 24-hours lowest transaction price
+      "product_type": "Perpetual",                    //What product is this? Futures, Perpetual, Options?
+      "open_interest": "6000",                        //The open interest in the last 24 hours in contracts.
+      "index_price": "24019.25",                      //Underlying index price
+      "index_name": "Bitcoin",                        //Name of the underlying index if any
+      "index_currency": "BTC",                        //Underlying currency for index
+      "funding_rate": "0.000044889033693137",         //Current funding rate
+      "next_funding_rate_timestamp": "1660665600000"  //Timestamp of the next funding rate change
+    }
+  ]
+}
+```
