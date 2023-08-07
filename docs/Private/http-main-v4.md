@@ -475,6 +475,7 @@ beneficiary.firstName | String | **Yes, if currency ticker is one of: UAH_IBAN, 
 beneficiary.lastName | String | **Yes, if currency ticker is one of: UAH_IBAN, USD_VISAMASTER, USD, EUR** | Beneficiary last name. Max length: 40 symbols, latin letters and special characters.
 beneficiary.tin | Integer | **Yes, if currency is UAH_IBAN** | Beneficiary TAX payer number. Integer, 10 digits.
 beneficiary.phone | String | **Yes, if currency ticker is one of: USD_VISAMASTER, EUR_VISAMASTER** | Beneficiary phone number. 
+beneficiary.email | String | **Yes, if currency ticker is one of: USD_VISAMASTER, EUR_VISAMASTER** | Beneficiary email. 
 
 **Request BODY raw:**
 ```json5
@@ -553,7 +554,8 @@ beneficiary.phone | String | **Yes, if currency ticker is one of: USD_VISAMASTER
     "beneficiary": {
       "firstName": "Firstname",
       "lastName": "Lastname",
-      "phone": "1234567891"
+      "phone": "1234567891",
+      "email": "email@test.test",
     },
     "provider" : "USD_VISAMASTER",
     "uniqueId" : "24529045",
